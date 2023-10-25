@@ -118,7 +118,32 @@ def selectPath(cityList, distMat, startCity):
 travelPath, totalDistance = selectPath(cityList, distMat, startingCity)
 
 def putData(bestPath, totalDistance, filepath):
-    print("now put the data back in the excel sheet")
+    try:
+        wb = pyxl.load_workbook(filepath)
+    except:
+        sys.exit("Failed opening file for writing")
+
+    try:
+        ws = wb['Sheet1']
+    except:
+        sys.exit("Failed accessing 'Sheet1' in the Excel file")
+
+    ws.cell(row=1, column=5, value="Optimized Path")
+    
+    for i in range(len(bestPath)):
+      ws.cell(row=i + 2, column=5, value=bestPath[i])
+
+    ws.cell(row=1, column=6, value="Total Distance (km)")
+    ws.cell(row=2, column=6, value=totalDistance)
+    wb.save(filepath)
+
+    print("Data successfully written to the Excel file.")
+    print("Optimized Path:")
+    print(" -> ".join(bestPath))
+    print(f"Total Distance: {totalDistance} km")
+
+# Call the putData function directly after defining it
+putData(travelPath, totalDistance, file)
 
         
         
